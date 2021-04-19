@@ -58,9 +58,9 @@ adf_test(anomaly_series[stationarity_test_case])
 kpss_test(anomaly_series[stationarity_test_case])
 
 # ## Fit an AR[n] model
-# n = 5
+# n = 1
 # for m in model_names:
-#     mod = AutoReg(accum_tseries[m], n, seasonal=True)
+#     mod = AutoReg(anomaly_series[m], n, seasonal=True)
 #     results = mod.fit()
 #     print('Bayesian Information Criterion for model {}, AR({}): {}'.format(
 #         m, n, results.bic))
@@ -71,7 +71,7 @@ comparison_n = range(1,6)
 bic_per_n = pd.DataFrame(index=comparison_n, columns=model_names)
 for n in comparison_n:
     for m in model_names:
-        mod = AutoReg(catchment_tseries[m], n, seasonal=True)
+        mod = AutoReg(anomaly_series[m], n, seasonal=True)
         results = mod.fit()
         bic_per_n[m][n] = results.bic
 
