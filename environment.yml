@@ -1,0 +1,16 @@
+name: stisp
+channels:
+  - defaults
+dependencies:
+  - gdal
+  - numpy
+  - matplotlib
+  - scipy
+  - netcdf4
+  - spyder
+  - pip
+  - pandas
+  - statsmodels
+  - scikit-learn
+  - jupyterlab
+prefix: /opt/anaconda3/envs/stisp
