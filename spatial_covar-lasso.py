@@ -39,7 +39,7 @@ def find_AR_residuals(tseries, which_model, chosen_n=1,
 
 ar_resids = []
 ts_toplot = []
-for i in range(1, 10):
+for i in range(1, 200):
     # print(i)
     ctmt_fpath = glob.glob('/Users/lizz/Documents/GitHub/Data_unsynced/SMBMIP-processed/*-catchment_{}-tseries.csv'.format(i))[0]
     s = read_catchment_series(ctmt_fpath)
@@ -49,12 +49,21 @@ for i in range(1, 10):
 
     ar_resids.append(r)
 
-emp_C = np.cov(ar_resids)
-emp_C -= emp_C.mean() # normalize
-emp_C /= emp_C.std()
+ar_resids -= np.mean(ar_resids, axis=0) # normalize
+emp_C = np.corrcoef(ar_resids)
+# emp_C = np.cov(ar_resids)
+
+## Compute covar normalized by variance
+# ar_resids /= (np.std(ar_resids, axis=0)**2)
+# emp_C = np.dot(ar_resids, ar_resids.T) / (len(ar_resids))
+
+## Use np.cov
+# emp_C = np.cov(ar_resids)
+# emp_C /= emp_C.std()
+# emp_C /= emp_C.std()
 
 np.random.seed(0)
-X = np.random.multivariate_normal(mean=np.zeros(len(ar_resids)), cov=emp_C, size=len(emp_C))
+X = np.random.multivariate_normal(mean=np.zeros(len(ar_resids)), cov=emp_C, size=len(ar_resids[0]))
 
 gl_model = GraphicalLassoCV()
 gl_model.fit(X)
@@ -75,7 +84,7 @@ vmax = cov_.max()
 for i, (name, this_cov) in enumerate(covs):
     plt.subplot(1, 3, i + 1)
     plt.imshow(this_cov, interpolation='nearest', vmin=-vmax, vmax=vmax,
-               cmap=plt.cm.RdBu_r)
+                cmap=plt.cm.RdBu_r)
     plt.xticks(())
     plt.yticks(())
-    plt.title('%s covariance' % name)
+    plt.title('%s corrcoef' % name)
