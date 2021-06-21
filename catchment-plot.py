@@ -60,7 +60,7 @@ for shape in sf.shapeRecords():
         x = [i[0] for i in shape.shape.points[i_start:i_end]]
         y = [i[1] for i in shape.shape.points[i_start:i_end]]
         ax.plot(x,y, color=catchment_color)
-    if 'KANGERLUSSUAQ' in shape.record['NAME']:
+    if highlight_catchment_name in shape.record['NAME']:
         ax.fill(x,y, color='b')
 # ax.contour(X, Y, S)
 plt.show()
