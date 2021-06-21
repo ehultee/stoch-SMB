@@ -56,9 +56,8 @@ def fit_catchment_series(tseries, which_model, comparison_n=range(1,6),
     
 
 
-Ns_1 = []
-Ns_2 = []
-# Ns_3 = []
+Ns_monthly = []
+Ns_annual = []
 bic_differences = []
 bic_vs_ar1 = []
 non1_count = 0
@@ -79,30 +78,27 @@ for i in range(1, 200):
         for m in model_names:
             bic_vs_ar1.append(bva[m])
     
-    # n3 = fit_catchment_series(s, which_model=model_names[4])
-    Ns_1.append(n1)
-    Ns_2.append(n2)
-    # Ns_3.append(n3)
+    Ns_monthly.append(n1)
+    Ns_annual.append(n2)
 bd = np.asarray(bic_differences)[np.isfinite(bic_differences)]
 bvar1 = np.asarray(bic_vs_ar1)[np.isfinite(bic_vs_ar1)]
 
-# fig, ax = plt.subplots()
-# ax.hist(Ns_2)
-# ax.set(xlabel='n', ylabel='Basins for which n is best AR(n)',
-#         xticks=(1, 2, 3, 4, 5),
-#         # title='SMB model: {}'.format(model_names[6])
-#         title='Multi-model mode, fit to annual SMB'
-#         )
-# plt.show()
-
 fig, ax = plt.subplots()
-ax.hist(bvar1)
-ax.set(xlabel='BIC difference between best and AR(1) fit', ylabel='Instances',
-        # xticks=(1, 2, 3, 4, 5),
-        # title='SMB model: {}'.format(model_names[6])
-        title='Single SMB model fits to annual SMB'
+ax.hist(Ns_annual)
+ax.set(xlabel='n', ylabel='Basins for which n is best AR(n)',
+        xticks=(1, 2, 3, 4, 5),
+        title='Multi-model mode, fit to annual SMB'
         )
 plt.show()
+
+# fig, ax = plt.subplots()
+# ax.hist(bvar1)
+# ax.set(xlabel='BIC difference between best and AR(1) fit', ylabel='Instances',
+#         # xticks=(1, 2, 3, 4, 5),
+#         # title='SMB model: {}'.format(model_names[6])
+#         title='Single SMB model fits to annual SMB'
+#         )
+# plt.show()
 
 # m = model_names[0]
 # fig1, ax1 = plt.subplots()
