@@ -34,6 +34,7 @@ S = ss[::4, ::4]
 
 ## Read in inter-catchment covariance from csv
 covar_fpath = '/Users/lizz/Desktop/20210618-GL_sparse_corrcoef.csv'
+# covar_fpath = '/Users/lizz/Desktop/ANICE_empC-20210611.csv'
 catchment_corrs = np.loadtxt(covar_fpath)
 
 
