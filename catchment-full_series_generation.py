@@ -19,6 +19,7 @@ from statsmodels.tsa.ar_model import AutoReg
 import scipy.linalg
 import glob
 
+
 model_names = ['ANICE-ITM_Berends', 'CESM_kampenhout', 'dEBM_krebs','HIRHAM_mottram', 
                 'NHM-SMAP_niwano', 'RACMO_noel', 'SNOWMODEL_liston']
 highlight_model = 'ANICE-ITM_Berends'
@@ -133,41 +134,12 @@ for j in range(100):
     Nj = np.random.normal(size=np.shape(ar_resids))
     noise_j = D @ L @ Nj
     noise_realizations.append(noise_j[highlight_catchment_id-1])
-noise_colors = cm.get_cmap('Blues')
-
-fig, ax = plt.subplots(1, figsize=(10,6))
-for k in range(len(noise_realizations)):
-    ax.plot(range(1980,2012), noise_realizations[k], 
-            color=noise_colors(k/len(noise_realizations)), alpha=0.5)
-ax.plot(range(1980, 2012), ar_resids[highlight_catchment_id-1], color='k')
-ax.set(xlabel='Year', ylabel='Catchment SMB residual [mm w.e.]')
-plt.show()
-
-## Plot a single timeseries with AR(n) fit
-colors_w = cm.get_cmap('Blues')(np.linspace(0.2, 1, num=len(model_names)))
-fig1, ax1 = plt.subplots(figsize=(10,4))
-for i,m in enumerate(model_names):
-    if 'ANICE' in m:
-        ax1.plot(a[m], label=m, color=colors_w[i])
-        ax1.plot(mod_fits[m], color='k', alpha=0.8, marker='d', 
-                  label='AR({}) fit to {}'.format(1, m))
-    else:
-        pass
-ax1.set(xlabel='Year', ylabel='Catchment SMB [mm w.e.]',
-        # title='Basin {}, all models'.format(basin_i)
-        title='Kangerlussuaq catchment, SMB model and AR(n) fit',
-        xticks=(np.datetime64('1980-01-01'), np.datetime64('1990-01-01'),
-                np.datetime64('2000-01-01'), np.datetime64('2010-01-01')),
-        xticklabels=(1980,1990,2000,2010)
-        )
-ax1.legend(bbox_to_anchor=(1.05, 1.0, 0.3, 0.2), loc='upper left')
-plt.tight_layout()
-plt.show()
+noise_colors=cm.get_cmap('Blues')
 
 ## Plot a sum of the two
 fig2, ax2 = plt.subplots(figsize=(10,6))
 for k in range(len(noise_realizations)):
-    ax2.plot(mods[highlight_model].predict(best_n, len(a)-1)
+    ax2.plot(mods[highlight_model].predict(best_n, len(a)-1, dynamic=best_n)
              +noise_realizations[k], 
             color=noise_colors(k/len(noise_realizations)), alpha=0.5)
 ax2.plot(ts_toplot[highlight_catchment_id-1][highlight_model], color='k',
@@ -178,4 +150,27 @@ ax2.set(xlabel='Year', ylabel=r'Catchment SMB anomaly [mm w.e. a$^{-1}$]',
                 np.datetime64('2000-01-01'), np.datetime64('2010-01-01')),
         xticklabels=(1980,1990,2000,2010))
 ax2.legend(loc='best')
+plt.show()
+
+## Future forecast
+yrs_after_1980 = 70
+noise_into_future = []
+for j in range(100):
+    Nj = np.random.normal(size=(len(ar_resids), yrs_after_1980))
+    noise_j = D @ L @ Nj
+    noise_into_future.append(noise_j[highlight_catchment_id-1])
+
+fig3, ax3 = plt.subplots(figsize=(10,6))
+for k in range(len(noise_into_future)):
+    ax3.plot(mods[highlight_model].predict(best_n, yrs_after_1980, dynamic=2*best_n)
+             +noise_into_future[k][best_n-1::], 
+            color=noise_colors(k/len(noise_realizations)), alpha=0.5)
+ax3.plot(ts_toplot[highlight_catchment_id-1][highlight_model], color='k',
+         label='{} output'.format(highlight_model))
+ax3.plot(np.NaN, np.NaN, color=noise_colors(0.5), label='Stochastic realizations')
+# ax2.set(xlabel='Year', ylabel=r'Catchment SMB anomaly [mm w.e. a$^{-1}$]',
+#         xticks=(np.datetime64('1980-01-01'), np.datetime64('1990-01-01'),
+#                 np.datetime64('2000-01-01'), np.datetime64('2010-01-01')),
+#         xticklabels=(1980,1990,2000,2010))
+ax3.legend(loc='best')
 plt.show()
