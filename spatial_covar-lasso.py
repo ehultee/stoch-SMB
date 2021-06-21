@@ -51,16 +51,6 @@ for i in range(1, 200):
 
 ar_resids -= np.mean(ar_resids, axis=0) # normalize
 emp_C = np.corrcoef(ar_resids)
-# emp_C = np.cov(ar_resids)
-
-## Compute covar normalized by variance
-# ar_resids /= (np.std(ar_resids, axis=0)**2)
-# emp_C = np.dot(ar_resids, ar_resids.T) / (len(ar_resids))
-
-## Use np.cov
-# emp_C = np.cov(ar_resids)
-# emp_C /= emp_C.std()
-# emp_C /= emp_C.std()
 
 np.random.seed(0)
 X = np.random.multivariate_normal(mean=np.zeros(len(ar_resids)), cov=emp_C, size=len(ar_resids[0]))
