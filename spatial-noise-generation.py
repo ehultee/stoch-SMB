@@ -8,7 +8,7 @@ Created on Wed Jun 16 15:47:29 2021
 @author: lizz
 """
 
-from sklearn.covariance import GraphicalLassoCV, ledoit_wolf
+from sklearn.covariance import GraphicalLassoCV
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
@@ -49,8 +49,7 @@ for i in range(1, 200):
     s = read_catchment_series(ctmt_fpath)
     a = s.resample('A').sum()
     ts_toplot.append(a)
-    r = find_AR_residuals(a, which_model=model_names[0], seasonal=False)
-
+    r = find_AR_residuals(a, which_model=model_names[0], chosen_n=4, seasonal=False)
     ar_resids.append(r)
 
 ar_resids -= np.mean(ar_resids, axis=0) # normalize
@@ -92,13 +91,13 @@ noise_realizations = []
 for j in range(100):
     Nj = np.random.normal(size=np.shape(ar_resids))
     noise_j = D @ L @ Nj
-    noise_realizations.append(noise_j[highlight_catchment_id])
+    noise_realizations.append(noise_j[highlight_catchment_id-1])
 noise_colors = cm.get_cmap('Blues')
 
 fig, ax = plt.subplots(1, figsize=(10,6))
 for k in range(len(noise_realizations)):
     ax.plot(range(1980,2012), noise_realizations[k], 
             color=noise_colors(k/len(noise_realizations)), alpha=0.5)
-ax.plot(range(1980, 2012), ar_resids[highlight_catchment_id], color='k')
+ax.plot(range(1980, 2012), ar_resids[highlight_catchment_id-1], color='k')
 ax.set(xlabel='Year', ylabel='Catchment SMB residual [mm w.e.]')
 plt.show()
