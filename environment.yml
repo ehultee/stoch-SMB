@@ -13,4 +13,6 @@ dependencies:
   - statsmodels
   - scikit-learn
   - jupyterlab
+  - cartopy
+  - pyshp
 prefix: /opt/anaconda3/envs/stisp
