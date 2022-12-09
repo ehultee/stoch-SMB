@@ -6,3 +6,16 @@
 .ipynb_checkpoints/catchment-full_series_generation-checkpoint.py
 .ipynb_checkpoints/environment-checkpoint.yml
 .ipynb_checkpoints/spatial-noise-generation-checkpoint.py
+.ipynb_checkpoints/catchment-aggregate-SMB-checkpoint.py
+.ipynb_checkpoints/catchment-plot-tseries_ex-checkpoint.py
+.ipynb_checkpoints/elevation-scaling-figures-checkpoint.ipynb
+.ipynb_checkpoints/example-ARFIMA-checkpoint.py
+.ipynb_checkpoints/example_map_panels-checkpoint.py
+.ipynb_checkpoints/icecore-ARIMA-checkpoint.py
+.ipynb_checkpoints/lapse_rate_regression-checkpoint.py
+.ipynb_checkpoints/model_type_comparison_plot-checkpoint.ipynb
+.ipynb_checkpoints/multi-catchment-process-checkpoint.py
+.ipynb_checkpoints/multi-catchment-reprocess-20221204-checkpoint.ipynb
+.ipynb_checkpoints/scaled-local-tseries-checkpoint.ipynb
+.ipynb_checkpoints/single_point_tseries-checkpoint.py
+__pycache__/stochSMB.cpython-37.pyc
