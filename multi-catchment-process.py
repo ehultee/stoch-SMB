@@ -4,6 +4,7 @@
 Read in Mouginot-Rignot catchments
 
 Created on Tue Apr 13 13:41:23 2021
+Edit 2 Sep: divide catchments sums by area to get catchment mean
 
 @author: lizz
 """
@@ -113,6 +114,7 @@ for m in model_names:
             ## Sample SMB at each Delaunay triangle and sum
             for j in catchments_to_pull:
                 catchment_sum = 0
+                area_sum = 0
                 triangles = tri_ctmts[j]
                 for tri in triangles:
                     rep_x, rep_y = tri.representative_point().x, tri.representative_point().y
@@ -121,7 +123,8 @@ for m in model_names:
                     smb_y = (np.abs(y_3km - rep_y)).argmin()
                     local_val = regridded_smb[smb_y, smb_x]*area_m2
                     catchment_sum += local_val
-                df_per_ctchmnt[j][m][d_subset[i]] = catchment_sum
+                    area_sum += area_m2
+                df_per_ctchmnt[j][m][d_subset[i]] = catchment_sum/area_sum
         tf = time.time()
         print('Finished processing year {} in time {}s'.format(y, tf-ti))
     t1 = time.time()
@@ -129,6 +132,6 @@ for m in model_names:
 
 ## Write to CSV
 for i in catchments_to_pull:  
-    csv_ctchmnt = '/Users/lizz/Documents/GitHub/Data_unsynced/SMBMIP-processed/{}-catchment_{}-tseries.csv'.format(datetime.date.today().strftime('%Y%m%d'), i)
+    csv_ctchmnt = '/Users/lizz/Documents/GitHub/Data_unsynced/SMBMIP-processed/{}-catchment_{}_mean-tseries.csv'.format(datetime.date.today().strftime('%Y%m%d'), i)
     df_per_ctchmnt[i].to_csv(csv_ctchmnt)
     
