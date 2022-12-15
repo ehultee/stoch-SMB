@@ -19,3 +19,8 @@
 .ipynb_checkpoints/scaled-local-tseries-checkpoint.ipynb
 .ipynb_checkpoints/single_point_tseries-checkpoint.py
 __pycache__/stochSMB.cpython-37.pyc
+.ipynb_checkpoints/lapse_rate_regression (1)-checkpoint.py
+.ipynb_checkpoints/map_catchments-checkpoint.py
+.ipynb_checkpoints/stochSMB-checkpoint.py
+.ipynb_checkpoints
+*/.ipynb_checkpoints/*
