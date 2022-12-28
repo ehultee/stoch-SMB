@@ -5,6 +5,7 @@ Monthly SMB anomaly map
 
 Created on Thu Sep  2 12:26:37 2021
 
+Edited Mon 14 Nov 2022: read in data from external hard drive; make two-panel plot
 @author: lizz
 """
 
@@ -46,7 +47,8 @@ sf = shapefile.Reader(catchment_fn)
 
 ## Example SMB field read in for grid
 print('Reading in example SMB field')
-nhm_smb_path = '/Users/lizz/Documents/GitHub/Data_unsynced/SMBMIP/NHM-SMAP_niwano-monthly-ERA-Interim-1980.nc'
+#nhm_smb_path = '/Users/lizz/Documents/GitHub/Data_unsynced/SMBMIP/NHM-SMAP_niwano-monthly-ERA-Interim-1980.nc'
+nhm_smb_path = '/Volumes/Backup Plus/Large data moved 20220331/SMBMIP/NHM-SMAP_niwano-monthly-ERA-Interim-1980.nc'
 fh2 = Dataset(nhm_smb_path, mode='r')
 xlon_nhm = fh2.variables['LON'][:].copy() #x-coord (latlon)
 ylat_nhm = fh2.variables['LAT'][:].copy() #y-coord (latlon)
@@ -117,7 +119,8 @@ for m in ('ANICE-ITM_Berends',):
         vname = 'SMBcorr'
     for y in years:
         ti = time.time()
-        fpath = '/Users/lizz/Documents/GitHub/Data_unsynced/SMBMIP/{}-monthly-ERA-Interim-{}.nc'.format(m, y)
+        #fpath = '/Users/lizz/Documents/GitHub/Data_unsynced/SMBMIP/{}-monthly-ERA-Interim-{}.nc'.format(m, y)
+        fpath = '/Volumes/Backup Plus/Large data moved 20220331/SMBMIP/{}-monthly-ERA-Interim-{}.nc'.format(m, y)
         fh = Dataset(fpath, mode='r')
         smb_m = fh.variables[vname][:].copy()
         fh.close()
