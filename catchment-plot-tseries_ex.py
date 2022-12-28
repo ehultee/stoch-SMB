@@ -5,6 +5,7 @@ Plot example timeseries and AR(n) fit for a single basin
 
 Created on Mon Apr 26 16:50:02 2021
 
+Edited Mon Nov 14 2022: plot an AR(1) fit for illustration
 @author: lizz
 """
 
@@ -61,7 +62,8 @@ basin_i=101
 ctmt_fpath = glob.glob('/Users/lizz/Documents/GitHub/Data_unsynced/SMBMIP-processed/*-catchment_{}-tseries.csv'.format(basin_i))[0]
 s = read_catchment_series(ctmt_fpath, anomaly=False)
 a = s.resample('A').sum()
-best_n, _ = fit_catchment_series(a, which_model='multi', seasonal=False)
+best_n, bic_diff = fit_catchment_series(a, which_model='multi', seasonal=False)
+#best_n = 1 ## force an AR(1) fit
 for m in model_names:
     mod = AutoReg(a[m], best_n, trend='ct', seasonal=False).fit()
     fv = mod.fittedvalues
@@ -91,7 +93,7 @@ ax.legend(bbox_to_anchor=(1.05, 1.0, 0.3, 0.2), loc='upper left')
 plt.tight_layout()
 plt.show()
 
-fig1, (ax1, ax2, ax3) = plt.subplots(3, figsize=(10,6), sharex=True)
+fig1, (ax1, ax2, ax3) = plt.subplots(3, figsize=(11,6), sharex=True)
 for i,m in enumerate(model_names):
     ax1.plot(s[m], label=m, color=colors_w[i])
     ax2.plot(a[m], label=m, color=colors_w[i])
@@ -115,5 +117,34 @@ ax1.legend(bbox_to_anchor=(1.05, 1.0, 0.3, 0.2), loc='upper left')
 ax3.legend(bbox_to_anchor=(1.05, 1.0, 0.3, 0.2), loc='upper left')
 fig1.align_ylabels((ax1, ax2, ax3))
 plt.tight_layout()
-plt.show()
+# plt.show()
+# plt.savefig('/Users/lizz/Desktop/20210622-kanger_tseries-large_ex.png', dpi=300)
+
+
+fig2, (ax4, ax5) = plt.subplots(2, figsize=(11,6), sharex=True)
+for i,m in enumerate(model_names):
+    ax4.plot(s[m], label=m, color=colors_w[i])
+    ax5.plot(a[m], label=m, color=colors_w[i]) 
+## highlight AR fit to just one model
+example_model = model_names[4]
+ax5.plot(mod_fits[example_model], color='k', alpha=0.8, marker='d', 
+         label='AR({}) fit to {}'.format(best_n, example_model))
+
+ax4.set(ylabel='Monthly SMB [mm w.e.]', 
+        title='Kangerlussuaq catchment, SMB models and AR(n) fit')
+#ax5.set(ylabel='Annual SMB [mm w.e.]')
+ax5.set(xlabel='Year', ylabel='Catchment SMB [mm w.e.]',
+        # title='Basin {}, all models'.format(basin_i)
+        # title='Kangerlussuaq catchment, SMB model and AR(n) fit',
+        xticks=(np.datetime64('1980-01-01'), np.datetime64('1990-01-01'),
+                np.datetime64('2000-01-01'), np.datetime64('2010-01-01')),
+        xticklabels=(1980,1990,2000,2010)
+        )
+#ax4.legend(bbox_to_anchor=(1.05, 1.0, 0.3, 0.2), loc='upper left')
+ax5.legend(bbox_to_anchor=(1.05, 1.0, 0.3, 0.2), loc='upper left') ## shared legend
+fig2.align_ylabels((ax4, ax5))
+plt.tight_layout()
+# plt.show()
+# plt.savefig('/Users/lizz/Desktop/20210622-kanger_tseries-large_ex.png', dpi=300)
+    
     
