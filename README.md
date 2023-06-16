@@ -1,4 +1,8 @@
 # stoch-SMB
+ 
+ [![DOI](https://zenodo.org/badge/354976150.svg)](https://zenodo.org/badge/latestdoi/354976150)
+
+ 
  Fitting stochastic/noise models to time series of ice sheet surface mass balance
 
 To get you started, this repository includes a conda environment file and a Jupyter notebook guide.
