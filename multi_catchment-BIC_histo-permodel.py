@@ -1,14 +1,13 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Compare best fit AR(n) for several catchments
+Summarize best-fit AR(n) separated by SMB process model
 
-Created on Tue Apr 20 11:47:48 2021
+Created on Sat Aug 19 16:07:46 2023
 
 @author: lizz
-
-Edited 19 Aug 2023: make histogram separated by model for illustration
 """
+
 
 import numpy as np
 import pandas as pd
@@ -32,7 +31,7 @@ def read_catchment_series(fpath, anomaly=True):
     else:
         return catchment_tseries
 
-def fit_catchment_series(tseries, which_model, comparison_n=range(1,6), 
+def fit_catchment_series(tseries, which_model, comparison_n=range(0,6), 
                          seasonal=True):
     bic_per_n = pd.DataFrame(index=comparison_n, columns=model_names)
     
@@ -46,7 +45,8 @@ def fit_catchment_series(tseries, which_model, comparison_n=range(1,6),
         best_n = bic_per_n.idxmin().mode()[0]
     else:
         for n in comparison_n:
-            mod = AutoReg(tseries[which_model], n, trend='ct', seasonal=seasonal)
+            mod = AutoReg(tseries[which_model], n, trend='ct', 
+                          seasonal=seasonal)
             results = mod.fit()
             bic_per_n[which_model][n] = results.bic
         bic_per_n[which_model] = pd.to_numeric(bic_per_n[which_model])
@@ -58,44 +58,44 @@ def fit_catchment_series(tseries, which_model, comparison_n=range(1,6),
     
 
 
-Ns_monthly = []
-Ns_annual = []
+
+Ns_annual_bymodel = {m: [] for m in model_names}
 bic_differences = []
-bic_vs_ar1 = []
+# bic_vs_ar1 = []
 non1_count = 0
 ts_toplot = []
 for i in range(0, 260):
-    print(i)
     ctmt_fpath = glob.glob('/Users/lizz/Documents/GitHub/Data_unsynced/SMBMIP-processed/*-catchment_{}_mean-tseries.csv'.format(i))[0]
     s = read_catchment_series(ctmt_fpath)
     a = s.resample('A').sum()
-    # ts_toplot.append(s)
-    # n1, _ = fit_catchment_series(s, which_model='multi', comparison_n=range(0,6))
     if a.isna().sum().sum()>0:
         print('NaNs found in catchment {}'.format(i))
         continue
     else:
-        n2, b = fit_catchment_series(a, which_model='multi', 
-                                     comparison_n=range(0,6),seasonal=False)
-        if n2!=1: # note BIC difference for non-AR(1) choices
-            non1_count +=1
-            bva = b.loc[1] - b.loc[n2] # difference between chosen fit and AR(1)
-            # for diffmag in b.nsmallest(2, columns=b.columns).max():
-            #     bic_differences.append(diffmag)
-            for m in model_names:
-                bic_vs_ar1.append(bva[m])
-        
-        # Ns_monthly.append(n1)
-        Ns_annual.append(n2)
-bd = np.asarray(bic_differences)[np.isfinite(bic_differences)]
-bvar1 = np.asarray(bic_vs_ar1)[np.isfinite(bic_vs_ar1)]
+        for m in model_names:
+            n2, b = fit_catchment_series(a, which_model=m, 
+                                         comparison_n=range(0,6),seasonal=False)
+            # if n2!=1: # note BIC difference for non-AR(1) choices
+            #     non1_count +=1
+            #     bva = b.loc[1] - b.loc[n2] # difference between chosen fit and AR(1)
+            #     # for diffmag in b.nsmallest(2, columns=b.columns).max():
+            #     #     bic_differences.append(diffmag)
+            #     for m in model_names:
+            #         bic_vs_ar1.append(bva[m])
+            
+            Ns_annual_bymodel[m].append(n2)
+# bd = np.asarray(bic_differences)[np.isfinite(bic_differences)]
+# bvar1 = np.asarray(bic_vs_ar1)[np.isfinite(bic_vs_ar1)]
 
-fig, ax = plt.subplots()
-ax.hist(Ns_annual)
-ax.set(xlabel='n', ylabel='Basins for which n is best AR(n)',
-        xticks=(0, 1, 2, 3, 4, 5),
-        title='Multi-model mode, fit to annual SMB'
-        )
+fig, axs = plt.subplots(7,1)
+for i, m in enumerate(model_names):
+    ax = axs.ravel()[i]
+    ax.hist(Ns_annual_bymodel[m])
+    ax.set(xlabel='n', # ylabel=m,
+            xticks=(0, 1, 2, 3, 4, 5),
+            title=m
+            )
+fig.supylabel('Basins for which n is best AR(n)')
 plt.show()
 
 # fig, ax = plt.subplots()
