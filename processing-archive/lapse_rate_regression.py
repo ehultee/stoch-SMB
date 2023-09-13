@@ -164,6 +164,7 @@ plt.show()
 # # def piecewise_linear(x, x0, y0, k1, k2):
 # #     return np.piecewise(x, [x < x0], [lambda x:k1*x + y0-k1*x0, lambda x:k2*x + y0-k2*x0])
 
+monthly_mbg = {i: [] for i in range(12)}
 
 fig, axs = plt.subplots(3, 4, sharex=True, sharey=True)
 # plt.title('Auto-fitting segments based on AIC & BIC')
@@ -185,6 +186,7 @@ for i in range(12):
                           # np.asarray(df.sort_values(by='elevation')['point_smb']),
                           anomalies,
                           maxcount=3)
+    monthly_mbg[i] = (px,py)
     ax.plot(px, py)
     ax.text(1000,-1100,'Month {}'.format(i+1))
 # plt.legend(loc='best')

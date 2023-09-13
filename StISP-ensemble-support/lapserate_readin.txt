@@ -1,0 +1,20 @@
+import csv
+import pandas as pd
+
+lapserate_path = '/Users/lizz/Documents/Research/StISP/Processed-data-for_ensemble/20221210-catchments_0to259-elev_SMB_lapserate.csv' ## replace with your local path (or direct to the GDrive)
+
+
+with open(lapserate_path) as file:
+    data = {}
+    for row in csv.DictReader(file):
+        for key, value in row.items():
+            if key not in data:
+                data[key] = []
+            v1 = value.strip('(array)')
+            v2 = v1.replace('), array(', ',') ## remove pattern from center of string
+            v3 = [v.strip('[]') for v in v2.split(',') if v!=''] ## remove non-numeric characters and entries
+            v4 = [float(v) for v in v3] ## produces a list of all the values, both x and y
+            vx, vy = v4[:3], v4[3::] 
+            v_final = [list(v) for v in zip(vx,vy)] ## format output as list ((x1,y1), (x2,y2), (x3,y3))
+            data[key].append(v_final)
+df = pd.DataFrame.from_dict(data) ## will read keys as column headers

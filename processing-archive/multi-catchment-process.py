@@ -23,7 +23,7 @@ import time
 ###------------------------
 ### CHOOSE CATCHMENTS
 ###------------------------
-catchments_to_pull = np.arange(200, 260)
+catchments_to_pull = np.arange(95, 105)
 
 ###------------------------
 ### DATA READ-IN  AND PROJECTION
