@@ -16,4 +16,3 @@ dependencies:
   - shapely
   - pyshp
   - cartopy
-prefix: /opt/anaconda3/envs/stisp
